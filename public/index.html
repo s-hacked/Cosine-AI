@@ -1,0 +1,2797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosine AI — University Helpdesk</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f7f8fc;
+            color: #171923;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* =========================
+           LAYOUT
+        ========================= */
+
+        .app {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            width: 270px;
+            background: #111318;
+            color: #fff;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px;
+            margin-bottom: 28px;
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        .new-chat {
+            border: 1px solid #30333b;
+            background: #1b1d23;
+            color: white;
+            padding: 12px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: left;
+            margin-bottom: 26px;
+            transition: 0.2s;
+        }
+
+        .new-chat:hover {
+            background: #252832;
+        }
+
+        .nav-title {
+            color: #777d89;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0 10px;
+            margin-bottom: 9px;
+        }
+
+        .nav-item {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: #c8cbd2;
+            padding: 11px 12px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 13px;
+            margin-bottom: 3px;
+            transition: 0.2s;
+        }
+
+        .nav-item:hover {
+            background: #1d2027;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            border-top: 1px solid #292c33;
+            padding-top: 18px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #aeb3bd;
+            font-size: 12px;
+            padding: 0 10px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .topbar {
+            height: 64px;
+            border-bottom: 1px solid #e7e8ed;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+        }
+
+        .top-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #3f4149;
+        }
+
+        .grounded-badge {
+            font-size: 11px;
+            color: #166534;
+            background: #ecfdf3;
+            border: 1px solid #bbf7d0;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        /* =========================
+           CHAT
+        ========================= */
+
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 45px 20px 130px;
+        }
+
+        .chat-container {
+            max-width: 880px;
+            margin: auto;
+        }
+
+        .welcome {
+            text-align: center;
+            padding-top: 55px;
+        }
+
+        .welcome-logo {
+            width: 64px;
+            height: 64px;
+            margin: auto;
+            border-radius: 19px;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            box-shadow: 0 15px 35px rgba(79,70,229,0.18);
+        }
+
+        .welcome h1 {
+            margin-top: 22px;
+            font-size: 32px;
+            letter-spacing: -0.03em;
+        }
+
+        .welcome p {
+            color: #6b7280;
+            max-width: 600px;
+            margin: 10px auto 30px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .suggestions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            max-width: 680px;
+            margin: auto;
+        }
+
+        .suggestion {
+            border: 1px solid #e3e5eb;
+            background: white;
+            padding: 16px;
+            border-radius: 13px;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .suggestion:hover {
+            border-color: #b8b5ff;
+            transform: translateY(-1px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.05);
+        }
+
+        .suggestion-title {
+            font-weight: 650;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .suggestion-text {
+            color: #777b86;
+            font-size: 12px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 26px;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .assistant-avatar {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .user-avatar {
+            background: #e5e7eb;
+            color: #374151;
+            order: 2;
+        }
+
+        .bubble {
+            max-width: 720px;
+            padding: 14px 17px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .assistant .bubble {
+            background: white;
+            border: 1px solid #e5e7eb;
+        }
+
+        .user .bubble {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .sources {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .source-card {
+            background: #f5f5f7;
+            border: 1px solid #e3e3e8;
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-size: 10px;
+            color: #666975;
+        }
+
+        /* =========================
+           INPUT
+        ========================= */
+
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            left: 270px;
+            right: 0;
+            padding: 20px 25px 25px;
+            background: linear-gradient(
+                to top,
+                #f7f8fc 75%,
+                rgba(247,248,252,0)
+            );
+        }
+
+        .input-box {
+            max-width: 880px;
+            margin: auto;
+            background: white;
+            border: 1px solid #dfe1e7;
+            border-radius: 15px;
+            display: flex;
+            align-items: flex-end;
+            padding: 10px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+        }
+
+        textarea {
+            flex: 1;
+            border: none;
+            outline: none;
+            resize: none;
+            min-height: 42px;
+            max-height: 130px;
+            padding: 10px 12px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .send-btn {
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 11px;
+            background: #4f46e5;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .send-btn:hover {
+            background: #4338ca;
+        }
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        .typing {
+            display: flex;
+            gap: 5px;
+            padding: 8px 0;
+        }
+
+        .typing span {
+            width: 6px;
+            height: 6px;
+            background: #8b8e98;
+            border-radius: 50%;
+            animation: bounce 1.2s infinite;
+        }
+
+        .typing span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .typing span:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes bounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* =========================
+           EXPLORE MODAL
+        ========================= */
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 17, 23, 0.62);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 30px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            width: min(950px, 100%);
+            max-height: 88vh;
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 22px 26px;
+            border-bottom: 1px solid #e8e9ee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .modal-header-left h2 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .modal-header-left p {
+            color: #777b86;
+            font-size: 12px;
+        }
+
+        .close-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #f1f2f5;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 18px;
+            color: #555862;
+        }
+
+        .close-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .modal-body {
+            padding: 28px;
+            overflow-y: auto;
+            line-height: 1.65;
+        }
+
+        .section {
+            margin-bottom: 34px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section h3 {
+            font-size: 17px;
+            margin-bottom: 12px;
+            color: #20222a;
+        }
+
+        .section h4 {
+            font-size: 14px;
+            margin: 22px 0 10px;
+            color: #373942;
+        }
+
+        .section p {
+            font-size: 13px;
+            color: #5f636e;
+            margin-bottom: 12px;
+        }
+
+        .section ul,
+        .section ol {
+            padding-left: 22px;
+            color: #5f636e;
+            font-size: 13px;
+        }
+
+        .section li {
+            margin-bottom: 8px;
+        }
+
+        .info-note {
+            background: #f5f3ff;
+            border-left: 4px solid #7c3aed;
+            padding: 13px 15px;
+            border-radius: 7px;
+            font-size: 12px;
+            color: #4b4560;
+            margin: 14px 0;
+        }
+
+        /* =========================
+           FEE TABLES
+        ========================= */
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 13px 0 18px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+            font-size: 12px;
+        }
+
+        th {
+            background: #f6f7f9;
+            color: #444750;
+            font-weight: 700;
+            text-align: left;
+            padding: 11px 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eef0f3;
+            color: #5f636e;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .total-row td {
+            font-weight: 700;
+            color: #24262e;
+            background: #fafafa;
+        }
+
+        .course-card {
+            border: 1px solid #e6e7eb;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+
+        .course-card h3 {
+            margin-bottom: 12px;
+        }
+
+        .course-total {
+            font-weight: 700;
+            color: #4f46e5;
+        }
+
+        .charge-list {
+            counter-reset: charge;
+            list-style: none !important;
+            padding-left: 0 !important;
+        }
+
+        .charge-list li {
+            display: flex;
+            gap: 10px;
+        }
+
+        .charge-number {
+            width: 22px;
+            height: 22px;
+            background: #ede9fe;
+            color: #6d28d9;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .external-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #4f46e5;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .external-link:hover {
+            text-decoration: underline;
+        }
+
+        .source-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 15px;
+        }
+
+        .source-link {
+            padding: 8px 12px;
+            background: #f5f5f7;
+            border: 1px solid #e1e2e7;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #4f46e5;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .source-link:hover {
+            background: #ede9fe;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 800px) {
+            .sidebar {
+                width: 72px;
+                padding: 20px 9px;
+            }
+
+            .brand-name,
+            .brand-subtitle,
+            .nav-title,
+            .nav-item span:not(.nav-icon),
+            .new-chat {
+                display: none;
+            }
+
+            .brand {
+                justify-content: center;
+                padding: 0;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .input-area {
+                left: 72px;
+            }
+
+            .suggestions {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome h1 {
+                font-size: 27px;
+            }
+
+            .modal-overlay {
+                padding: 10px;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .topbar {
+                padding: 0 15px;
+            }
+
+            .chat-area {
+                padding: 30px 14px 120px;
+            }
+
+            .input-area {
+                padding: 14px;
+                left: 72px;
+            }
+
+            .grounded-badge {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-logo">C</div>
+
+            <div>
+                <div class="brand-name">Cosine AI</div>
+                <div class="brand-subtitle">University Helpdesk</div>
+            </div>
+        </div>
+
+        <button class="new-chat" onclick="newChat()">
+            + &nbsp; New Conversation
+        </button>
+
+        <div class="nav-title">Explore</div>
+
+        <button class="nav-item" onclick="openExplore('academic')">
+            <span class="nav-icon">▣</span>
+            <span>Academic Policies</span>
+        </button>
+
+        <button class="nav-item" onclick="openExplore('examinations')">
+            <span class="nav-icon">✎</span>
+            <span>Examinations</span>
+        </button>
+
+        <button class="nav-item" onclick="openExplore('fees')">
+            <span class="nav-icon">₹</span>
+            <span>Fees & Payments</span>
+        </button>
+
+        <button class="nav-item" onclick="openExplore('hostel')">
+            <span class="nav-icon">⌂</span>
+            <span>Hostel & Campus</span>
+        </button>
+
+        <div class="nav-title" style="margin-top: 24px;">About</div>
+
+        <button class="nav-item" onclick="showAbout('how')">
+            <span class="nav-icon">?</span>
+            <span>How Cosine AI Works</span>
+        </button>
+
+        <button class="nav-item" onclick="showAbout('sources')">
+            <span class="nav-icon">◈</span>
+            <span>Source Documents</span>
+        </button>
+
+        <div class="sidebar-bottom">
+            <div class="status">
+                <span class="status-dot"></span>
+                Knowledge Base Online
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="main">
+
+        <div class="topbar">
+            <div class="top-title">Campus Helpdesk Assistant</div>
+
+            <div class="grounded-badge">
+                ✓ Source Grounded
+            </div>
+        </div>
+
+        <div class="chat-area" id="chatArea">
+
+            <div class="chat-container" id="chatContainer">
+
+                <div class="welcome" id="welcome">
+
+                    <div class="welcome-logo">C</div>
+
+                    <h1>How can I help you?</h1>
+
+                    <p>
+                        Ask questions about university fees, examinations,
+                        academic policies, hostel rules and campus life.
+                        Cosine AI answers using the available source documents.
+                    </p>
+
+                    <div class="suggestions">
+
+                        <button class="suggestion"
+                                onclick="useSuggestion('What are the examination rules?')">
+                            <div class="suggestion-title">
+                                Examination Rules
+                            </div>
+
+                            <div class="suggestion-text">
+                                Ask about ID cards, exam entry and conduct.
+                            </div>
+                        </button>
+
+                        <button class="suggestion"
+                                onclick="useSuggestion('What additional charges are applicable apart from tuition fees?')">
+                            <div class="suggestion-title">
+                                Fee Structure
+                            </div>
+
+                            <div class="suggestion-text">
+                                Find tuition and additional university charges.
+                            </div>
+                        </button>
+
+                        <button class="suggestion"
+                                onclick="useSuggestion('What is the minimum attendance requirement?')">
+                            <div class="suggestion-title">
+                                Attendance Policy
+                            </div>
+
+                            <div class="suggestion-text">
+                                Learn about attendance requirements.
+                            </div>
+                        </button>
+
+                        <button class="suggestion"
+                                onclick="useSuggestion('What hostel facilities are available?')">
+                            <div class="suggestion-title">
+                                Hostel & Campus
+                            </div>
+
+                            <div class="suggestion-text">
+                                Explore hostel facilities and campus information.
+                            </div>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- INPUT -->
+
+        <div class="input-area">
+
+            <div class="input-box">
+
+                <textarea
+                    id="questionInput"
+                    placeholder="Ask Cosine AI anything about the university..."
+                    rows="1"
+                    onkeydown="handleKey(event)"
+                ></textarea>
+
+                <button class="send-btn" onclick="askQuestion()">
+                    ↑
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     EXPLORE MODAL
+========================================================= -->
+
+<div class="modal-overlay" id="exploreModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div class="modal-header-left">
+
+                <h2 id="modalTitle"></h2>
+
+                <p id="modalSubtitle"></p>
+
+            </div>
+
+            <button class="close-btn" onclick="closeModal()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-body" id="modalBody"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   CHAT FUNCTIONS
+========================================================= */
+
+const chatContainer = document.getElementById("chatContainer");
+const chatArea = document.getElementById("chatArea");
+const input = document.getElementById("questionInput");
+
+function escapeHTML(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function formatAnswer(text) {
+
+    let safe = escapeHTML(text);
+
+    safe = safe.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+    safe = safe.replace(/\n\n/g, "<br><br>");
+
+    safe = safe.replace(/\n/g, "<br>");
+
+    return safe;
+}
+
+function scrollToBottom() {
+    setTimeout(() => {
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }, 50);
+}
+
+function addUserMessage(question) {
+
+    const message = document.createElement("div");
+
+    message.className = "message user";
+
+    message.innerHTML = `
+        <div class="avatar user-avatar">U</div>
+
+        <div class="bubble">
+            ${escapeHTML(question)}
+        </div>
+    `;
+
+    chatContainer.appendChild(message);
+
+    scrollToBottom();
+}
+
+function addAssistantMessage(answer, sources = []) {
+
+    const message = document.createElement("div");
+
+    message.className = "message assistant";
+
+    let sourcesHTML = "";
+
+    if (sources && sources.length > 0) {
+
+        sourcesHTML = `
+            <div class="sources">
+
+                ${sources.map(source => `
+                    <div class="source-card">
+                        ${escapeHTML(source.document)}
+                        · Page ${source.page}
+                    </div>
+                `).join("")}
+
+            </div>
+        `;
+    }
+
+    message.innerHTML = `
+
+        <div class="avatar assistant-avatar">
+            C
+        </div>
+
+        <div>
+
+            <div class="bubble">
+                ${formatAnswer(answer)}
+            </div>
+
+            ${sourcesHTML}
+
+        </div>
+    `;
+
+    chatContainer.appendChild(message);
+
+    scrollToBottom();
+}
+
+function addLoadingMessage() {
+
+    const message = document.createElement("div");
+
+    message.className = "message assistant";
+    message.id = "loadingMessage";
+
+    message.innerHTML = `
+
+        <div class="avatar assistant-avatar">
+            C
+        </div>
+
+        <div class="bubble">
+
+            <div class="typing">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+        </div>
+    `;
+
+    chatContainer.appendChild(message);
+
+    scrollToBottom();
+}
+
+function removeLoadingMessage() {
+
+    const loading = document.getElementById("loadingMessage");
+
+    if (loading) {
+        loading.remove();
+    }
+}
+
+async function askQuestion() {
+
+    const question = input.value.trim();
+
+    if (!question) {
+        return;
+    }
+
+    const welcome = document.getElementById("welcome");
+
+    if (welcome) {
+        welcome.remove();
+    }
+
+    addUserMessage(question);
+
+    input.value = "";
+
+    addLoadingMessage();
+
+    try {
+
+        const response = await fetch("/ask", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                question: question
+            })
+
+        });
+
+        const data = await response.json();
+
+        removeLoadingMessage();
+
+        addAssistantMessage(
+            data.answer || "I could not verify this from the available official documents.",
+            data.sources || []
+        );
+
+    } catch (error) {
+
+        removeLoadingMessage();
+
+        addAssistantMessage(
+            "The AI service is currently unavailable. Please try again."
+        );
+    }
+}
+
+function useSuggestion(question) {
+
+    input.value = question;
+
+    askQuestion();
+}
+
+function handleKey(event) {
+
+    if (event.key === "Enter" && !event.shiftKey) {
+
+        event.preventDefault();
+
+        askQuestion();
+    }
+}
+
+function newChat() {
+
+    chatContainer.innerHTML = `
+
+        <div class="welcome" id="welcome">
+
+            <div class="welcome-logo">C</div>
+
+            <h1>How can I help you?</h1>
+
+            <p>
+                Ask questions about university fees, examinations,
+                academic policies, hostel rules and campus life.
+                Cosine AI answers using the available source documents.
+            </p>
+
+            <div class="suggestions">
+
+                <button class="suggestion"
+                        onclick="useSuggestion('What are the examination rules?')">
+
+                    <div class="suggestion-title">
+                        Examination Rules
+                    </div>
+
+                    <div class="suggestion-text">
+                        Ask about ID cards, exam entry and conduct.
+                    </div>
+
+                </button>
+
+                <button class="suggestion"
+                        onclick="useSuggestion('What additional charges are applicable apart from tuition fees?')">
+
+                    <div class="suggestion-title">
+                        Fee Structure
+                    </div>
+
+                    <div class="suggestion-text">
+                        Find tuition and additional university charges.
+                    </div>
+
+                </button>
+
+                <button class="suggestion"
+                        onclick="useSuggestion('What is the minimum attendance requirement?')">
+
+                    <div class="suggestion-title">
+                        Attendance Policy
+                    </div>
+
+                    <div class="suggestion-text">
+                        Learn about attendance requirements.
+                    </div>
+
+                </button>
+
+                <button class="suggestion"
+                        onclick="useSuggestion('What hostel facilities are available?')">
+
+                    <div class="suggestion-title">
+                        Hostel & Campus
+                    </div>
+
+                    <div class="suggestion-text">
+                        Explore hostel facilities and campus information.
+                    </div>
+
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    scrollToBottom();
+}
+
+
+/* =========================================================
+   EXPLORE DATA
+========================================================= */
+
+const exploreData = {
+
+    fees: {
+
+        title: "Fees & Payments",
+
+        subtitle: "Programme tuition fees, hostel fees and other applicable charges",
+
+        content: `
+
+            <div class="section">
+
+                <h3>B.Tech (Artificial Intelligence)</h3>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Gross Fee (₹)</th>
+                                <th>AI Fee Advantage (₹)</th>
+                                <th>Net Payable (₹)</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Year 1</td>
+                                <td>4,50,000</td>
+                                <td>25,000</td>
+                                <td>4,25,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 2</td>
+                                <td>4,60,000</td>
+                                <td>50,000</td>
+                                <td>4,10,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 3</td>
+                                <td>4,72,500</td>
+                                <td>72,500</td>
+                                <td>4,00,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 4</td>
+                                <td>4,72,500</td>
+                                <td>87,500</td>
+                                <td>3,85,000</td>
+                            </tr>
+
+                            <tr class="total-row">
+                                <td>Total</td>
+                                <td>18,55,000</td>
+                                <td>2,35,000</td>
+                                <td>16,20,000</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="info-note">
+
+                    <strong>Exclusive AI Fee Advantage:</strong>
+                    Bennett University offers a special AI Fee Advantage
+                    for students enrolling in the B.Tech (Artificial Intelligence)
+                    programme along with merit scholarship. The benefit is designed
+                    to make advanced AI learning more accessible while maintaining
+                    an industry-aligned curriculum. Limited seats are available
+                    and the offer is on a first-come, first-served basis.
+
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>B.Tech (Computer Science Engineering)</h3>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Tuition Fee (₹)</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Year 1</td>
+                                <td>3,80,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 2</td>
+                                <td>3,90,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 3</td>
+                                <td>4,00,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 4</td>
+                                <td>4,00,000</td>
+                            </tr>
+
+                            <tr class="total-row">
+                                <td>Total Fees</td>
+                                <td>15,70,000</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>B.Tech (Electronics & Communications Engineering)</h3>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Tuition Fee (₹)</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Year 1</td>
+                                <td>3,60,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 2</td>
+                                <td>3,70,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 3</td>
+                                <td>3,80,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 4</td>
+                                <td>3,80,000</td>
+                            </tr>
+
+                            <tr class="total-row">
+                                <td>Total Fees</td>
+                                <td>14,90,000</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>B.Tech + M.Tech (Biotech) — Dual Degree</h3>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Tuition Fee (₹)</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Year 1</td>
+                                <td>3,70,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 2</td>
+                                <td>3,70,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 3</td>
+                                <td>3,80,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 4</td>
+                                <td>3,80,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 5</td>
+                                <td>1,29,000</td>
+                            </tr>
+
+                            <tr class="total-row">
+                                <td>Total Fees</td>
+                                <td>16,29,000</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>BCA — 3 Years</h3>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Tuition Fee (₹)</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Year 1</td>
+                                <td>1,80,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 2</td>
+                                <td>1,90,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 3</td>
+                                <td>2,00,000</td>
+                            </tr>
+
+                            <tr class="total-row">
+                                <td>Total Fees</td>
+                                <td>5,70,000</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>BCA (Hons.) / BCA (Hons. with Research) — 4 Years</h3>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Tuition Fee (₹)</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Year 1</td>
+                                <td>1,80,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 2</td>
+                                <td>1,90,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 3</td>
+                                <td>2,00,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Year 4</td>
+                                <td>2,00,000</td>
+                            </tr>
+
+                            <tr class="total-row">
+                                <td>Total Fees</td>
+                                <td>7,70,000</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>B.Com (Finance & Accounting)</h3>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Fee Type</th>
+                                <th>Year 1</th>
+                                <th>Year 2</th>
+                                <th>Year 3</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Tuition Fee</td>
+                                <td>1,50,000</td>
+                                <td>1,60,000</td>
+                                <td>1,70,000</td>
+                                <td>4,80,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Registration Fee</td>
+                                <td>45,000</td>
+                                <td>–</td>
+                                <td>–</td>
+                                <td>45,000</td>
+                            </tr>
+
+                            <tr class="total-row">
+                                <td>Total Fees</td>
+                                <td>1,95,000</td>
+                                <td>1,60,000</td>
+                                <td>1,70,000</td>
+                                <td>5,25,000</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>B.A. (Mass Communication) — 3 Years</h3>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Fee Type</th>
+                                <th>Year 1</th>
+                                <th>Year 2</th>
+                                <th>Year 3</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Tuition Fee</td>
+                                <td>3,25,000</td>
+                                <td>3,25,000</td>
+                                <td>3,25,000</td>
+                                <td>9,75,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Registration Fee</td>
+                                <td>45,000</td>
+                                <td>–</td>
+                                <td>–</td>
+                                <td>45,000</td>
+                            </tr>
+
+                            <tr class="total-row">
+                                <td>Total Fees</td>
+                                <td>3,70,000</td>
+                                <td>3,25,000</td>
+                                <td>3,25,000</td>
+                                <td>10,20,000</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>B.A. Mass Communication Hons. / Hons. with Research — 4 Years</h3>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Fee Type</th>
+                                <th>Year 1</th>
+                                <th>Year 2</th>
+                                <th>Year 3</th>
+                                <th>Year 4</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Tuition Fee</td>
+                                <td>3,25,000</td>
+                                <td>3,25,000</td>
+                                <td>3,25,000</td>
+                                <td>3,25,000</td>
+                                <td>13,00,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>Registration Fee</td>
+                                <td>45,000</td>
+                                <td>–</td>
+                                <td>–</td>
+                                <td>–</td>
+                                <td>45,000</td>
+                            </tr>
+
+                            <tr class="total-row">
+                                <td>Total Fees</td>
+                                <td>3,70,000</td>
+                                <td>3,25,000</td>
+                                <td>3,25,000</td>
+                                <td>3,25,000</td>
+                                <td>13,45,000</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Hostel Fees</h3>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Hostel Facility</th>
+                                <th>On Campus</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Triple Occupancy / Sharing</td>
+                                <td>₹1,70,000 PA</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <p>
+                    Hostel fees are subject to an annual increase of up to 7%.
+                </p>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Other Applicable Charges</h3>
+
+                <ol class="charge-list">
+
+                    <li>
+                        <span class="charge-number">1</span>
+                        <span>
+                            <strong>Registration Fee:</strong>
+                            ₹45,000 one time.
+                        </span>
+                    </li>
+
+                    <li>
+                        <span class="charge-number">2</span>
+                        <span>
+                            <strong>Security Deposit:</strong>
+                            ₹30,000 one time and refundable.
+                        </span>
+                    </li>
+
+                    <li>
+                        <span class="charge-number">3</span>
+                        <span>
+                            <strong>Examination Charges:</strong>
+                            ₹12,000 per academic year, payable in two
+                            instalments of ₹6,000 at semester registration.
+                        </span>
+                    </li>
+
+                    <li>
+                        <span class="charge-number">4</span>
+                        <span>
+                            <strong>Co-curricular Charges:</strong>
+                            ₹3,000 per academic year.
+                        </span>
+                    </li>
+
+                    <li>
+                        <span class="charge-number">5</span>
+                        <span>
+                            <strong>Degree Digitalization Charges:</strong>
+                            ₹2,500 one time.
+                        </span>
+                    </li>
+
+                    <li>
+                        <span class="charge-number">6</span>
+                        <span>
+                            <strong>Alumni Charges:</strong>
+                            ₹1,500 one time.
+                        </span>
+                    </li>
+
+                    <li>
+                        <span class="charge-number">7</span>
+                        <span>
+                            <strong>Sports Charges:</strong>
+                            ₹26,000 per academic year for day scholars,
+                            payable in two instalments of ₹13,000.
+                        </span>
+                    </li>
+
+                    <li>
+                        <span class="charge-number">8</span>
+                        <span>
+                            <strong>Transport Charges:</strong>
+                            Charges depend on distance from the university
+                            and are payable per semester.
+                            <br><br>
+
+                            <a class="external-link"
+                               href="https://www.bennett.edu.in/bennett-life/student-services/transportation-facility/"
+                               target="_blank">
+                                View transport rates and payment details →
+                            </a>
+                        </span>
+                    </li>
+
+                </ol>
+
+            </div>
+
+
+            <div class="info-note">
+
+                <strong>Important:</strong>
+                Fees may be revised with a new academic year according
+                to university policy. Students should verify current
+                applicable fees before making payment.
+
+            </div>
+
+        `
+    },
+
+
+    /* =====================================================
+       ACADEMIC POLICIES
+    ===================================================== */
+
+    academic: {
+
+        title: "Academic Policies",
+
+        subtitle: "Attendance, course registration, evaluation and academic integrity",
+
+        content: `
+
+            <div class="section">
+
+                <h3>Overview</h3>
+
+                <p>
+                    Bennett University's academic rules are governed by
+                    University Ordinances, the Examination Manual and
+                    programme-specific regulations.
+                </p>
+
+                <div class="info-note">
+
+                    Key areas include attendance requirements,
+                    continuous evaluation, academic progression and
+                    academic integrity.
+
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Attendance & Course Registration</h3>
+
+                <ul>
+
+                    <li>
+                        <strong>Minimum attendance:</strong>
+                        Students generally need at least 75% attendance
+                        to avoid being debarred from examinations or
+                        receiving a debarment/failure grade.
+                    </li>
+
+                    <li>
+                        A relaxation of up to 10% may apply for approved
+                        medical, deputation or personal reasons depending
+                        on the applicable programme and examination rules.
+                    </li>
+
+                    <li>
+                        <strong>Add/drop & withdrawals:</strong>
+                        Course additions or withdrawals follow dates
+                        specified in the Academic Calendar and may require
+                        faculty mentor consultation and academic approval.
+                    </li>
+
+                    <li>
+                        <strong>Credit & progression:</strong>
+                        Programmes follow semester/term systems with
+                        credit limits, faculty mentoring and
+                        promotion/detention criteria.
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Evaluation & Grading</h3>
+
+                <ul>
+
+                    <li>
+                        Courses may combine internal evaluations such as
+                        minors/mid-terms, teacher assessments and
+                        practicals/labs with end-term examinations.
+                    </li>
+
+                    <li>
+                        Grading may use relative or absolute grading
+                        depending on class size and subject type.
+                    </li>
+
+                    <li>
+                        Results may be reviewed through moderation
+                        committees before finalization.
+                    </li>
+
+                    <li>
+                        Physical ID/admit cards are required for
+                        examination entry.
+                    </li>
+
+                    <li>
+                        Eligible students with disabilities or injuries
+                        may request examination accommodations such as
+                        extra time or a scribe according to applicable rules.
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Academic Integrity & Discipline</h3>
+
+                <ul>
+
+                    <li>
+                        <strong>Unfair Means (UFM):</strong>
+                        Cheating, unauthorized materials or prohibited
+                        electronics during examinations may constitute
+                        academic malpractice.
+                    </li>
+
+                    <li>
+                        Penalties may range from warnings or grade
+                        cancellation to suspension or expulsion depending
+                        on the severity of the case and applicable rules.
+                    </li>
+
+                    <li>
+                        General misconduct, ragging and other disciplinary
+                        matters are handled through formal university
+                        procedures.
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Official Academic References</h3>
+
+                <div class="source-links">
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/ordinances-statutes-rules-and-regulations/"
+                       target="_blank">
+                        Bennett University Rules & Regulations
+                    </a>
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/wp-content/uploads/2017/08/Ord-RulesandReg-UG-BTechF.pdf"
+                       target="_blank">
+                        UG B.Tech Ordinances
+                    </a>
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/wp-content/uploads/2025/01/Examination-Manual-2024-25-.pdf"
+                       target="_blank">
+                        Examination Manual
+                    </a>
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/wp-content/uploads/2024/05/BU-Ordinance-First-Amendment-2019.pdf"
+                       target="_blank">
+                        BU Ordinance
+                    </a>
+
+                </div>
+
+            </div>
+
+        `
+    },
+
+
+    /* =====================================================
+       EXAMINATIONS
+    ===================================================== */
+
+    examinations: {
+
+        title: "Examinations",
+
+        subtitle: "End-term examination instructions, ID requirements and exam conduct",
+
+        content: `
+
+            <div class="section">
+
+                <h3>General Examination Instructions</h3>
+
+                <p>
+                    Students must carry their valid university ID card
+                    issued by the Registrar's Office for every examination.
+                    The ID card must be presented at the examination centre
+                    and to the invigilator.
+                </p>
+
+                <div class="info-note">
+
+                    Entry to the examination hall is permitted only after
+                    presenting the required identity documents.
+
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Before the Examination</h3>
+
+                <ol>
+
+                    <li>
+                        Bring your university ID card and wear it around
+                        your neck during the examination.
+                    </li>
+
+                    <li>
+                        If you forget your ID card for the first time,
+                        report to the COE office before the examination
+                        begins and obtain a temporary authorization slip
+                        for that day.
+                    </li>
+
+                    <li>
+                        Take your seat at least 10 minutes before the
+                        examination begins.
+                    </li>
+
+                    <li>
+                        Leave mobile phones, programmable calculators,
+                        study material, revision notes and other
+                        prohibited materials outside the examination hall.
+                    </li>
+
+                    <li>
+                        Check the seating arrangement and sit only in
+                        your assigned seat.
+                    </li>
+
+                </ol>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Lost or Misplaced ID Card</h3>
+
+                <p>
+                    Students who have lost or misplaced their regular
+                    identity card can request a duplicate or temporary
+                    ID card through the Registrar's Office.
+                </p>
+
+                <ul>
+
+                    <li>
+                        Write an application requesting a regular or
+                        temporary ID card.
+                    </li>
+
+                    <li>
+                        Carry a passport-size photograph.
+                    </li>
+
+                    <li>
+                        A ₹1,000 payment/deposit is specified in the
+                        examination instructions.
+                    </li>
+
+                    <li>
+                        A valid photo ID such as Aadhaar or voter ID
+                        may be required for a temporary authorization slip.
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>During the Examination</h3>
+
+                <ul>
+
+                    <li>
+                        Students are under the disciplinary control of
+                        the Controller of Examinations and invigilators.
+                    </li>
+
+                    <li>
+                        Misbehaviour or disobedience of examination
+                        instructions can result in removal from the hall
+                        and disciplinary action.
+                    </li>
+
+                    <li>
+                        Entry is generally not entertained after
+                        10 minutes from the commencement of the examination.
+                    </li>
+
+                    <li>
+                        Students may not leave the hall before the
+                        specified minimum duration has elapsed.
+                    </li>
+
+                    <li>
+                        Mobile phones, smart watches, electronic gadgets
+                        and programmable calculators are prohibited in
+                        specified examination areas.
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Examination Eligibility</h3>
+
+                <ul>
+
+                    <li>
+                        Students must appear only for registered subjects.
+                    </li>
+
+                    <li>
+                        Students must satisfy eligibility conditions such
+                        as minimum attendance.
+                    </li>
+
+                    <li>
+                        Students who have been expelled, rusticated or
+                        debarred may not be permitted to appear during
+                        the applicable period.
+                    </li>
+
+                    <li>
+                        Admit cards and university identity cards must
+                        be presented where required.
+                    </li>
+
+                    <li>
+                        Carrying restricted or objectionable materials
+                        during an examination is prohibited.
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Unfair Means & Disciplinary Action</h3>
+
+                <p>
+                    Students found guilty of using or attempting to use
+                    unfair means may be subject to action under the
+                    university's UFM procedure.
+                </p>
+
+                <p>
+                    Depending on the circumstances, penalties can include
+                    cancellation of an examination, debarment from future
+                    examinations or other disciplinary action.
+                </p>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Official Examination References</h3>
+
+                <div class="source-links">
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/wp-content/uploads/2025/01/Examination-Manual-2024-25-.pdf"
+                       target="_blank">
+                        Examination Manual
+                    </a>
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/ordinances-statutes-rules-and-regulations/"
+                       target="_blank">
+                        University Rules & Regulations
+                    </a>
+
+                </div>
+
+            </div>
+
+        `
+    },
+
+
+    /* =====================================================
+       HOSTEL & CAMPUS
+    ===================================================== */
+
+    hostel: {
+
+        title: "Hostel & Campus",
+
+        subtitle: "Accommodation, facilities, amenities and campus living",
+
+        content: `
+
+            <div class="section">
+
+                <h3>Hostel Life at Bennett University</h3>
+
+                <p>
+                    Bennett University offers on-campus hostel accommodation
+                    for boys and girls within the university campus, designed
+                    to provide a safe, comfortable and modern living environment.
+                </p>
+
+                <p>
+                    The hostels can accommodate up to 10,000 students and
+                    primarily feature furnished triple-sharing rooms.
+                </p>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Rooms & Accommodation</h3>
+
+                <ul>
+
+                    <li>
+                        Air-conditioned shared rooms are available.
+                    </li>
+
+                    <li>
+                        Triple-sharing rooms are a primary accommodation
+                        option.
+                    </li>
+
+                    <li>
+                        Rooms are furnished with beds, storage facilities,
+                        tables and chairs.
+                    </li>
+
+                    <li>
+                        Accommodation is available for both boys and girls.
+                    </li>
+
+                    <li>
+                        Hostel accommodation is offered on a
+                        first-come-first-served basis.
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Hostel Fee</h3>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Facility</th>
+                                <th>Annual Fee</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>On-campus Triple Sharing</td>
+                                <td>₹1,70,000 per year</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <p>
+                    The hostel fee is subject to an annual increase
+                    of up to 7%.
+                </p>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Facilities & Amenities</h3>
+
+                <ul>
+
+                    <li>
+                        Common rooms with indoor games and entertainment options.
+                    </li>
+
+                    <li>
+                        Wi-Fi connectivity.
+                    </li>
+
+                    <li>
+                        Laundry services.
+                    </li>
+
+                    <li>
+                        24/7 security and hostel wardens.
+                    </li>
+
+                    <li>
+                        Power backup through DG sets.
+                    </li>
+
+                    <li>
+                        Centralised temperature control.
+                    </li>
+
+                    <li>
+                        Routine maintenance and dedicated safety checks.
+                    </li>
+
+                    <li>
+                        Access to sports and fitness facilities.
+                    </li>
+
+                    <li>
+                        Wellness support maintained by MAX Healthcare.
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Food & Campus Rules</h3>
+
+                <ul>
+
+                    <li>
+                        Meals are served through mess and cafeteria facilities.
+                    </li>
+
+                    <li>
+                        Campus food policies restrict meat, chicken and fish
+                        inside university premises.
+                    </li>
+
+                    <li>
+                        Egg-containing items are permitted according to
+                        the provided hostel information.
+                    </li>
+
+                    <li>
+                        Day scholars are generally not permitted inside
+                        hostel premises.
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Off-Campus Accommodation</h3>
+
+                <p>
+                    Students may also consider off-campus accommodation
+                    options such as Nalanda Living near the university,
+                    which may provide daily transport or bus services.
+                </p>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Availability</h3>
+
+                <div class="info-note">
+
+                    On-campus accommodation availability can change based
+                    on demand and admission timing. Students should check
+                    the latest availability directly with Bennett University
+                    before making accommodation plans.
+
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Official Hostel References</h3>
+
+                <div class="source-links">
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/bennett-life/hostels-at-bu/"
+                       target="_blank">
+                        Bennett University Hostels
+                    </a>
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/admission/fee-structure/"
+                       target="_blank">
+                        Official Fee Structure
+                    </a>
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/wp-content/uploads/2024/05/Standing-Orders-for-Hostel.pdf"
+                       target="_blank">
+                        Hostel Standing Orders
+                    </a>
+
+                </div>
+
+            </div>
+
+        `
+    }
+
+};
+
+
+/* =========================================================
+   OPEN EXPLORE MODAL
+========================================================= */
+
+function openExplore(type) {
+
+    const data = exploreData[type];
+
+    if (!data) {
+        return;
+    }
+
+    document.getElementById("modalTitle").textContent = data.title;
+
+    document.getElementById("modalSubtitle").textContent =
+        data.subtitle;
+
+    document.getElementById("modalBody").innerHTML =
+        data.content;
+
+    document.getElementById("exploreModal")
+        .classList.add("active");
+
+    document.body.style.overflow = "hidden";
+}
+
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
+function showAbout(type) {
+
+    let title = "";
+    let subtitle = "";
+    let content = "";
+
+    if (type === "how") {
+
+        title = "How Cosine AI Works";
+
+        subtitle =
+            "A source-grounded university helpdesk assistant";
+
+        content = `
+
+            <div class="section">
+
+                <h3>What is Cosine AI?</h3>
+
+                <p>
+                    Cosine AI is a university helpdesk assistant designed
+                    to answer student questions about fees, examinations,
+                    academic policies, hostel rules and campus information.
+                </p>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>1. Student Question</h3>
+
+                <p>
+                    A student enters a natural-language question such as:
+                    "What are the examination rules?"
+                </p>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>2. Document Retrieval</h3>
+
+                <p>
+                    Cosine AI searches the available university documents
+                    and retrieves the most relevant sections for the question.
+                </p>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>3. Grounded Generation</h3>
+
+                <p>
+                    The retrieved information is provided as context to
+                    the language model. The model is instructed to answer
+                    only from the supplied evidence.
+                </p>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>4. Source Citation</h3>
+
+                <p>
+                    Answers include the relevant document and page information
+                    so that users can understand where the information came from.
+                </p>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>5. Refusal When Evidence Is Missing</h3>
+
+                <p>
+                    If the available documents do not provide sufficient
+                    evidence, Cosine AI does not guess. Instead, it responds:
+                </p>
+
+                <div class="info-note">
+
+                    "I could not verify this from the available official documents."
+
+                </div>
+
+            </div>
+
+        `;
+
+    } else {
+
+        title = "Source Documents";
+
+        subtitle =
+            "Documents and official references used by Cosine AI";
+
+        content = `
+
+            <div class="section">
+
+                <h3>Knowledge Base</h3>
+
+                <p>
+                    Cosine AI uses university-related documents and
+                    official references as its knowledge base.
+                    The retrieval system identifies relevant document
+                    sections before generating an answer.
+                </p>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Important References</h3>
+
+                <div class="source-links">
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/admission/fee-structure/"
+                       target="_blank">
+                        Official Fee Structure
+                    </a>
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/ordinances-statutes-rules-and-regulations/"
+                       target="_blank">
+                        Rules & Regulations
+                    </a>
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/wp-content/uploads/2025/01/Examination-Manual-2024-25-.pdf"
+                       target="_blank">
+                        Examination Manual
+                    </a>
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/bennett-life/hostels-at-bu/"
+                       target="_blank">
+                        Hostel Information
+                    </a>
+
+                    <a class="source-link"
+                       href="https://www.bennett.edu.in/wp-content/uploads/2024/05/Standing-Orders-for-Hostel.pdf"
+                       target="_blank">
+                        Hostel Standing Orders
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <h3>Source-Grounded Answers</h3>
+
+                <p>
+                    Cosine AI is designed to distinguish between information
+                    that can be supported by its available documents and
+                    questions for which sufficient evidence is unavailable.
+                </p>
+
+                <div class="info-note">
+
+                    Always verify time-sensitive information such as
+                    fees, deadlines and availability using the latest
+                    official university source.
+
+                </div>
+
+            </div>
+
+        `;
+    }
+
+    document.getElementById("modalTitle").textContent = title;
+
+    document.getElementById("modalSubtitle").textContent =
+        subtitle;
+
+    document.getElementById("modalBody").innerHTML =
+        content;
+
+    document.getElementById("exploreModal")
+        .classList.add("active");
+
+    document.body.style.overflow = "hidden";
+}
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+function closeModal() {
+
+    document.getElementById("exploreModal")
+        .classList.remove("active");
+
+    document.body.style.overflow = "";
+}
+
+
+/* Close when clicking outside the modal */
+
+document.getElementById("exploreModal")
+    .addEventListener("click", function(event) {
+
+        if (event.target === this) {
+            closeModal();
+        }
+
+    });
+
+
+/* Close with Escape */
+
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "Escape") {
+        closeModal();
+    }
+
+});
+
+</script>
+
+</body>
+</html>

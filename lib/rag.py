@@ -5,7 +5,13 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-DOCS_FOLDER = "Docs"
+# Get the project root directory.
+# This file is inside: Cosine-AI/lib/rag.py
+# So we go one level up from lib/ to reach Cosine-AI/
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Find the Docs folder from the project root.
+DOCS_FOLDER = os.path.join(BASE_DIR, "Docs")
 
 
 def clean_text(text):
